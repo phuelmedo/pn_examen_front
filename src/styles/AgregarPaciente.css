@@ -1,0 +1,21 @@
+.form-group {
+    margin-bottom: 15px;
+  }
+.container {
+    margin-left: 20px;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    max-width: 400px;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+  }
+  
+  .form-group label {
+    margin-bottom: 8px;
+  }
