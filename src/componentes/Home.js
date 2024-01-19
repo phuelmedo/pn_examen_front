@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import '../styles/Listado.css';
 
 const Inicio = () => {
-  const [pacientes, setPacientes] = useState([]);
+  const [libros, setLibros] = useState([]);
 
   useEffect(() => {
-    const fetchPacientes = async () => {
+    const fetchLibros = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/pacientes/buscar');
+        const response = await fetch('http://localhost:3001/api/libros/buscar-libros/ultimos');
         if (response.ok) {
           const data = await response.json();
 
-          const ultimos5Pacientes = data.slice(-5);
-
-          setPacientes(ultimos5Pacientes);
+          setLibros(data);
         } else {
           console.error('Error al obtener la lista de pacientes:', response.statusText);
         }
@@ -22,21 +21,25 @@ const Inicio = () => {
       }
     };
 
-    fetchPacientes();
+    fetchLibros();
   }, []);
 
   return (
     <div className="container">
         <h1>Bienvenido!</h1>
-        <h1>Lista de Últimos 5 Pacientes</h1>
+        <h1>Lista de Últimos 3 Libros</h1>
         <ul>
-            {pacientes.map((paciente) => (
-            <li key={paciente.id}>
-                <p>{`${paciente.nombre}`}</p>
-                {console.log('URL de la imagen:', paciente.foto)}
-                <img src={paciente.fotoPersonal} alt={`Foto de ${paciente.nombre}`} />
+          {libros.map((libro) => (
+            <li key={libro.id}>
+              <p>{`${libro.nombreLibro}`}</p>
+              <p>{`${libro.autor}`}</p>
+              <p>{`${libro.editorial}`}</p>
+            <div>
+                <Link to={`/libro/detalle/${libro._id}`}>Ver detalles</Link>
+            </div>
+            <p>-------------------</p>
             </li>
-            ))}
+          ))}
         </ul>
     </div>
   );

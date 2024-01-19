@@ -3,37 +3,37 @@ import { useNavigate, Link } from 'react-router-dom';
 import '../styles/Listado.css';
 
 const BuscarRegistro = () => {
-  const [sexo, setSexo] = useState('');
-  const [fechaIngreso, setFechaIngreso] = useState('');
-  const [enfermedad, setEnfermedad] = useState('');
-  const [pacientes, setPacientes] = useState([]);
+  const [nombreLibro, setNombreLibro] = useState('');
+  const [autor, setAutor] = useState('');
+  const [editorial, setEditorial] = useState('');
+  const [libros, setLibros] = useState([]);
   const [busquedaRealizada, setBusquedaRealizada] = useState(false);
   const navigate = useNavigate();
 
   const handleBuscar = async () => {
     try {
       const queryParams = new URLSearchParams({
-        sexo,
-        fechaIngreso,
-        enfermedad,
+        nombreLibro,
+        autor,
+        editorial,
       });
 
-      const url = `http://localhost:3001/api/pacientes/buscar?${queryParams}`;
+      const url = `http://localhost:3001/api/libros/buscar?${queryParams}`;
       const response = await fetch(url);
 
       if (response.ok) {
         const data = await response.json();
-        setPacientes(data);
-        setBusquedaRealizada(true); // Actualizar el estado después de la búsqueda
+        setLibros(data);
+        setBusquedaRealizada(true); 
       } else {
         console.error('Error en la solicitud:', response.statusText);
-        setPacientes([]); // Limpiar la lista en caso de error
-        setBusquedaRealizada(true); // Actualizar el estado después de la búsqueda
+        setLibros([]); 
+        setBusquedaRealizada(true); 
       }
     } catch (error) {
       console.error('Error en la solicitud:', error);
-      setPacientes([]); // Limpiar la lista en caso de error
-      setBusquedaRealizada(true); // Actualizar el estado después de la búsqueda
+      setLibros([]);
+      setBusquedaRealizada(true); 
     }
   };
 
@@ -47,25 +47,25 @@ const BuscarRegistro = () => {
       <h1>Busqueda Personalizada</h1>
 
       <div>
-        <label>Sexo: </label>
-        <input type="text" value={sexo} onChange={(e) => setSexo(e.target.value)} />
+        <label>Nombre libro: </label>
+        <input type="text" value={nombreLibro} onChange={(e) => setNombreLibro(e.target.value)} />
       </div>
 
       <div>
-        <label>Fecha de Ingreso: </label>
-        <input type="text" value={fechaIngreso} onChange={(e) => setFechaIngreso(e.target.value)} />
+        <label>Autor: </label>
+        <input type="text" value={autor} onChange={(e) => setAutor(e.target.value)} />
       </div>
 
       <div>
-        <label>Enfermedad: </label>
-        <input type="text" value={enfermedad} onChange={(e) => setEnfermedad(e.target.value)} />
+        <label>Editorial: </label>
+        <input type="text" value={editorial} onChange={(e) => setEditorial(e.target.value)} />
       </div>
 
       <button onClick={handleBuscar}>Buscar</button>
       {busquedaRealizada && (
         <>
-          {pacientes.length > 0 ? (
-            <ListarPacientes pacientes={pacientes} />
+          {libros.length > 0 ? (
+            <ListarLibros libros={libros} />
           ) : (
             <p>No se encontraron registros.</p>
           )}
@@ -75,25 +75,23 @@ const BuscarRegistro = () => {
   );
 };
 
-const ListarPacientes = ({ pacientes }) => {
+const ListarLibros = ({ libros }) => {
   return (
     <div className="container">
-      <h1>Lista de Pacientes</h1>
+      <h1>Lista de Libros</h1>
       <ul>
-        {pacientes.map((paciente) => (
-          <li key={paciente.id}>
-            <p>{`${paciente.nombre}`}</p>
-            {paciente.fotoPersonal ? (
-              <img src={paciente.fotoPersonal} alt="Foto Personal" />
-            ) : (
-              <p>Paciente sin imagen</p>
-            )}
+          {libros.map((libro) => (
+            <li key={libro.id}>
+              <p>{`${libro.nombreLibro}`}</p>
+              <p>{`${libro.autor}`}</p>
+              <p>{`${libro.editorial}`}</p>
             <div>
-              <Link to={`/paciente/detalle/${paciente._id}`}>Ver detalles</Link>
+                <Link to={`/libro/detalle/${libro._id}`}>Ver detalles</Link>
             </div>
-          </li>
-        ))}
-      </ul>
+            <p>-------------------</p>
+            </li>
+          ))}
+        </ul>
     </div>
   );
 };

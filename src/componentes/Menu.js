@@ -11,13 +11,13 @@ function Menu() {
           <NavLink exact to="/">Inicio</NavLink>
         </li>
         <li className="nav-item">
-          <NavLink to="/paciente/nuevo">Nuevo Paciente</NavLink>
+          <NavLink to="/libro/nuevo">Nuevo Libro</NavLink>
         </li>
         <li className="nav-item">
-          <NavLink to="/paciente/listar">Listar Paciente</NavLink>
+          <NavLink to="/libro/listar">Listar Libros</NavLink>
         </li>
         <li className="nav-item">
-          <NavLink to="/paciente/buscar/:search">Buscar Paciente</NavLink>
+          <NavLink to="/libro/buscar/:search">Buscar Libro</NavLink>
         </li>
         <li className="nav-item">
           <NavLink to="/redirect/:search">Busqueda personalizada</NavLink>

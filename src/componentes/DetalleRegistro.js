@@ -10,12 +10,12 @@ const DetalleRegistro = () => {
     useEffect(() => {
     const fetchRegistroDetalle = async () => {
         try {
-        const response = await fetch(`http://localhost:3001/api/pacientes/buscar/${id}`);
+        const response = await fetch(`http://localhost:3001/api/libros/buscar/${id}`);
         if (response.ok) {
             const data = await response.json();
             setRegistro(data);
           } else {
-            console.error('Paciente no encontrado');
+            console.error('Libro no encontrado');
             setRegistro(null);
           }
         } catch (error) {
@@ -28,8 +28,8 @@ const DetalleRegistro = () => {
 
   const handleEliminar = async () => {
     try {
-      await fetch(`http://localhost:3001/api/pacientes/delete/${id}`, { method: 'DELETE' });
-      navigate('/paciente/listar');
+      await fetch(`http://localhost:3001/api/libros/delete/${id}`, { method: 'DELETE' });
+      navigate('/libro/listar');
     } catch (error) {
       console.error('Error al eliminar el registro:', error);
     }
@@ -47,19 +47,18 @@ const DetalleRegistro = () => {
   return (
     <div className="container">
         <h1>Detalle del Registro</h1>
-        <p>RUT: {registro.rut}</p>
-        <p>Nombre: {registro.nombre}</p>
-        <p>Edad: {registro.edad}</p>
-        <p>Sexo: {registro.sexo}</p>
-        <p>Enfermedad: {registro.enfermedad}</p>
-        <p>Fecha de Ingreso: {new Date(registro.fechaIngreso).toLocaleString()}</p>
-        {registro.fotoPersonal ? (
-                <img src={registro.fotoPersonal} alt="Foto Personal" />
+        <p>ISBN: {registro.ISBN}</p>
+        <p>Nombre Libro: {registro.nombreLibro}</p>
+        <p>Autor: {registro.autor}</p>
+        <p>Editorial: {registro.editorial}</p>
+        <p>Paginas: {registro.paginas}</p>
+        {registro.portada ? (
+                <img src={registro.portada} alt="Foto Personal" />
             ) : (
-                <p>Paciente sin imagen</p>
+                <p>Libro sin imagen</p>
             )}
         <div>
-            <Link to={`/paciente/actualizar/${id}`}>Actualizar Registro</Link>
+            <Link to={`/libro/actualizar/${id}`}>Actualizar Registro</Link>
         </div>
         <div>
             <Link onClick={handleEliminar}>Eliminar Registro</Link>

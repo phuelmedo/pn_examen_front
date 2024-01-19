@@ -2,17 +2,18 @@ import React, { useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from "react-router-dom"
 import SimpleReactValidator from 'simple-react-validator';
-import '../styles/AgregarPaciente.css';
+import '../styles/AgregarRegistro.css';
 
-const AgregarPaciente = () => {
-  const { handleSubmit, errors } = useForm();
+const AgregarRegistro = () => {
+  const { handleSubmit, errors, reset } = useForm();
   const [fotoPersonalUrl, setFotoPersonalUrl] = useState(null);
   const nav = useNavigate()
 
-  const rutRef = useRef();
-  const nombreRef = useRef();
-  const edadRef = useRef();
-  const enfermedadRef = useRef();
+  const isbnRef = useRef();
+  const nombreLibroRef = useRef();
+  const autorRef = useRef();
+  const editorialRef = useRef();
+  const paginasRef = useRef();
   const validator = new SimpleReactValidator({
     autoForceUpdate: this,
     messages: {
@@ -30,28 +31,31 @@ const AgregarPaciente = () => {
 
   const onSubmit = async (data) => {
     try {
-        const isRutValid = validator.fieldValid('rut');
-        const isNombreValid = validator.fieldValid('nombre');
-        const isEdadValid = validator.fieldValid('edad');
-        const isEnfermedadValid = validator.fieldValid('enfermedad');
+        const isIsbnValid = validator.fieldValid('ISBN');
+        const isNombreLibroValid = validator.fieldValid('nombreLibro');
+        const isAutorValid = validator.fieldValid('autor');
+        const isEditorialValid = validator.fieldValid('editorial');
+        const isPaginasValid = validator.fieldValid('paginas');
 
-      const areRequiredFieldsValid = isRutValid && isNombreValid && isEdadValid && isEnfermedadValid;
+      const areRequiredFieldsValid = isIsbnValid && isNombreLibroValid && isAutorValid && isEditorialValid && isPaginasValid;
 
       if (areRequiredFieldsValid) {
         const formData = new FormData(document.querySelector('form'));
 
-        const response = await fetch('http://localhost:3001/api/pacientes/create', {
+        const response = await fetch('http://localhost:3001/api/libros/create', {
           method: 'POST',
           body: formData,
         });
-
+        console.log(areRequiredFieldsValid);
         if (response.ok) {
-          console.log('Paciente agregado exitosamente');
-          nav('/paciente/listar');
+
+          console.log('Libro agregado exitosamente');
+          nav('/libro/listar');
         } else {
-          console.error('Error al agregar paciente:', response.statusText);
+          console.error('Error al agregar libro:', response.statusText);
         }
       } else {
+        reset();
         console.log('Formulario no válido. Por favor, corrija los errores.');
         window.alert('Complete todos los campos obligatorios');
       }
@@ -62,55 +66,53 @@ const AgregarPaciente = () => {
 
   return (
     <div className="container">
-      <h1>Agregar Nuevo Paciente</h1>
+      <h1>Agregar Nuevo Libro</h1>
 
       <form onSubmit={handleSubmit(onSubmit)}>
       <div className="form-group">
-          <label>RUT:</label>
-          <input type="text" name="rut" ref={rutRef} />
-          <span style={{ color: 'red' }}>{validator.message('rut', rutRef.current?.value, 'required')}</span>
+          <label>ISBN:</label>
+          <input type="text" name="ISBN" ref={isbnRef} />
+          <span style={{ color: 'red' }}>{validator.message('ISBN', isbnRef.current?.value, 'required')}</span>
         </div>
 
         <div className="form-group">
-          <label>Nombre:</label>
-          <input type="text" name="nombre" ref={nombreRef}/>
-          <span style={{ color: 'red' }}>{validator.message('nombre', nombreRef.current?.value, 'required')}</span>
+          <label>Nombre Libro:</label>
+          <input type="text" name="nombreLibro" ref={nombreLibroRef}/>
+          <span style={{ color: 'red' }}>{validator.message('nombreLibro', nombreLibroRef.current?.value, 'required')}</span>
         </div>
 
         <div className="form-group">
-          <label>Edad:</label>
-          <input type="number" name="edad" ref={edadRef}/>
-          <span style={{ color: 'red' }}>{validator.message('edad', edadRef.current?.value, 'required')}</span>
+          <label>Autor:</label>
+          <input type="text" name="autor" ref={autorRef}/>
+          <span style={{ color: 'red' }}>{validator.message('autor', autorRef.current?.value, 'required')}</span>
         </div>
 
         <div className="form-group">
-          <label>Sexo:</label>
-          <select name="sexo">
-            <option value="masculino">Masculino</option>
-            <option value="femenino">Femenino</option>
-          </select>
+          <label>Editorial:</label>
+          <input type="text" name="editorial" ref={editorialRef}/>
+          <span style={{ color: 'red' }}>{validator.message('editorial', editorialRef.current?.value, 'required')}</span>
         </div>
 
         <div className="form-group">
-          <label>Foto Personal:</label>
+          <label>Portada:</label>
           <input
             type="file"
-            name="fotoPersonal"
+            name="portada"
             onChange={handleFotoChange}
           />
           {fotoPersonalUrl && <img src={fotoPersonalUrl} alt="Foto Personal" />}
         </div>
 
         <div className="form-group">
-          <label>Enfermedad:</label>
-          <input type="text" name="enfermedad" ref={enfermedadRef}/>
-          <span style={{ color: 'red' }}>{validator.message('enfermedad', enfermedadRef.current?.value, 'required')}</span>
+          <label>Paginas:</label>
+          <input type="number" name="paginas" ref={paginasRef}/>
+          <span style={{ color: 'red' }}>{validator.message('paginas', paginasRef.current?.value, 'required')}</span>
         </div>
 
-        <button type="submit">Agregar Paciente</button>
+        <button type="submit">Agregar Libro</button>
       </form>
     </div>
   );
 };
 
-export default AgregarPaciente;
+export default AgregarRegistro;

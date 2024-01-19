@@ -2,43 +2,41 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../styles/Listado.css';
 
-const ListarPacientes = () => {
-    const [pacientes, setPacientes] = useState([]);
+const ListarLibros = () => {
+    const [libros, setLibros] = useState([]);
   
     useEffect(() => {
-      const fetchPacientes = async () => {
+      const fetchLibros = async () => {
         try {
-          const response = await fetch('http://localhost:3001/api/pacientes/buscar');
+          const response = await fetch('http://localhost:3001/api/libros/buscar');
           if (response.ok) {
             const data = await response.json();
-            console.error('Error en la conexión:', pacientes);
-            setPacientes(data);
+            console.error('Error en la conexión:', libros);
+            setLibros(data);
           } else {
-            console.error('Error al obtener la lista de pacientes:', response.statusText);
+            console.error('Error al obtener la lista de libros:', response.statusText);
           }
         } catch (error) {
           console.error('Error en la conexión:', error);
         }
       };
   
-      fetchPacientes();
+      fetchLibros();
     }, []);
   
     return (
       <div className="container">
-        <h1>Lista de Pacientes</h1>
+        <h1>Lista de Libros</h1>
         <ul>
-          {pacientes.map((paciente) => (
-            <li key={paciente.id}>
-              <p>{`${paciente.nombre}`}</p>
-                {paciente.fotoPersonal ? (
-                <img src={paciente.fotoPersonal} alt="Foto Personal" />
-                ) : (
-                <p>Paciente sin imagen</p>
-                )}
+          {libros.map((libro) => (
+            <li key={libro.id}>
+              <p>{`${libro.nombreLibro}`}</p>
+              <p>{`${libro.autor}`}</p>
+              <p>{`${libro.editorial}`}</p>
             <div>
-                <Link to={`/paciente/detalle/${paciente._id}`}>Ver detalles</Link>
+                <Link to={`/libro/detalle/${libro._id}`}>Ver detalles</Link>
             </div>
+            <p>-------------------</p>
             </li>
           ))}
         </ul>
@@ -46,4 +44,4 @@ const ListarPacientes = () => {
     );
   };
 
-export default ListarPacientes;
+export default ListarLibros;

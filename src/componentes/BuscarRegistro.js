@@ -8,7 +8,7 @@ const BuscarRegistro = ({ onBuscar }) => {
   const navigate = useNavigate();
 
   const handleBuscar = () => {
-    navigate(`/paciente/detalle/${id}`);
+    navigate(`/libro/detalle/${id}`);
   };
 
   return (
@@ -16,7 +16,7 @@ const BuscarRegistro = ({ onBuscar }) => {
       <h1>Buscar Registro por Id</h1>
       <label>Id:  </label>
       <input type="text" value={id} onChange={(e) => setId(e.target.value)} />
-      <Link to={`/paciente/detalle/${id}`}>
+      <Link to={`/libro/detalle/${id}`}>
         <button onClick={handleBuscar}>Buscar</button>
       </Link>
     </div>

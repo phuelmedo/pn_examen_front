@@ -3,11 +3,11 @@ import { useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from "react-router-dom";
 import SimpleReactValidator from 'simple-react-validator';
-import '../styles/AgregarPaciente.css';
+import '../styles/AgregarRegistro.css';
 
-const ActualizarPaciente = () => {
+const ActualizarRegistro = () => {
     const { id } = useParams();
-    const { handleSubmit, setValue, register, getValues } = useForm();
+    const { handleSubmit, setValue, register, getValues, reset } = useForm();
     const [fotoPersonalUrl, setFotoPersonalUrl] = useState('');
     const nav = useNavigate()
     const validator = new SimpleReactValidator({
@@ -16,19 +16,19 @@ const ActualizarPaciente = () => {
         },
       });
 
-    const obtenerInformacionPaciente = async () => {
+    const obtenerInformacionLibro = async () => {
     try {
-        const response = await fetch(`http://localhost:3001/api/pacientes/buscar/${id}`);
+        const response = await fetch(`http://localhost:3001/api/libros/buscar/${id}`);
         if (response.ok) {
         const data = await response.json();
         Object.keys(data).forEach((key) => {
             setValue(key, data[key]);
-            if (key === 'fotoPersonal') {
+            if (key === 'portada') {
                 setFotoPersonalUrl(data[key]);
             }
         });
         } else {
-        console.error('Error al obtener la información del paciente:', response.statusText);
+        console.error('Error al obtener la información del libro:', response.statusText);
         }
     } catch (error) {
         console.error('Error en la conexión:', error);
@@ -36,7 +36,7 @@ const ActualizarPaciente = () => {
     };
 
     useEffect(() => {
-        obtenerInformacionPaciente();
+      obtenerInformacionLibro();
       }, [id]);
 
       const handleFotoChange = (e) => {
@@ -49,38 +49,39 @@ const ActualizarPaciente = () => {
 
       const onSubmit = async (data) => {
         try {
-            const isRutValid = validator.fieldValid('rut');
-            const isNombreValid = validator.fieldValid('nombre');
-            const isEdadValid = validator.fieldValid('edad');
-            const isEnfermedadValid = validator.fieldValid('enfermedad');
-      
-            const areRequiredFieldsValid = isNombreValid && isEdadValid && isEnfermedadValid;
+          const isIsbnValid = validator.fieldValid('ISBN');
+          const isNombreLibroValid = validator.fieldValid('nombreLibro');
+          const isAutorValid = validator.fieldValid('autor');
+          const isEditorialValid = validator.fieldValid('editorial');
+          const isPaginasValid = validator.fieldValid('paginas');
+  
+        const areRequiredFieldsValid = isIsbnValid && isNombreLibroValid && isAutorValid && isEditorialValid && isPaginasValid;
     
           if (areRequiredFieldsValid) {
             const formData = new FormData();
-            formData.append('rut', data.rut);
-            formData.append('nombre', data.nombre);
-            formData.append('edad', data.edad);
-            formData.append('sexo', data.sexo);
-            formData.append('enfermedad', data.enfermedad);
+            formData.append('ISBN', data.ISBN);
+            formData.append('nombreLibro', data.nombreLibro);
+            formData.append('autor', data.autor);
+            formData.append('editorial', data.editorial);
+            formData.append('paginas', data.paginas);
     
-            if (data.fotoPersonal[0] instanceof File) {
-              formData.append('fotoPersonal', data.fotoPersonal[0]);
+            if (data.portada[0] instanceof File) {
+              formData.append('portada', data.fotoPersonal[0]);
             } else {
-              formData.append('fotoPersonal', fotoPersonalUrl);
+              formData.append('portada', fotoPersonalUrl);
             }
     
-            const response = await fetch(`http://localhost:3001/api/pacientes/modify/${id}`, {
+            const response = await fetch(`http://localhost:3001/api/libros/modify/${id}`, {
               method: 'PUT',
               body: formData,
             });
-    
+            console.log(response);
             if (response.ok) {
-              console.log('Paciente actualizado exitosamente');
-              nav('/paciente/listar');
+              console.log('Libro actualizado exitosamente');
+              nav('/libro/listar');
             } else {
               window.alert('Complete los campos');
-              console.error('Error al actualizar paciente:', response.statusText);
+              console.error('Error al actualizar libro:', response.statusText);
             }
           } else {
             console.log('Formulario no válido. Por favor, corrija los errores.');
@@ -93,56 +94,54 @@ const ActualizarPaciente = () => {
 
       return (
         <div className="container">
-          <h1>Actualizar Paciente</h1>
+          <h1>Actualizar Libro</h1>
     
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="form-group">
-              <label>RUT:</label>
-              <input type="text" name="rut" {...register('rut')} />
-              <span style={{ color: 'red' }}>{validator.message('rut', getValues('rut'), 'required')}</span>
+              <label>ISBN:</label>
+              <input type="text" name="ISBN" {...register('ISBN')} />
+              <span style={{ color: 'red' }}>{validator.message('ISBN', getValues('ISBN'), 'required')}</span>
             </div>
     
             <div className="form-group">
-              <label>Nombre:</label>
-              <input type="text" name="nombre" {...register('nombre')} />
-              <span style={{ color: 'red' }}>{validator.message('nombre', getValues('nombre'), 'required')}</span>
+              <label>Nombre Libro:</label>
+              <input type="text" name="nombreLibro" {...register('nombreLibro')} />
+              <span style={{ color: 'red' }}>{validator.message('nombreLibro', getValues('nombreLibro'), 'required')}</span>
             </div>
     
             <div className="form-group">
-              <label>Edad:</label>
-              <input type="number" name="edad" {...register('edad')} />
-              <span style={{ color: 'red' }}>{validator.message('edad', getValues('edad'), 'required')}</span>
+              <label>Autor:</label>
+              <input type="text" name="autor" {...register('autor')} />
+              <span style={{ color: 'red' }}>{validator.message('autor', getValues('autor'), 'required')}</span>
             </div>
     
             <div className="form-group">
-              <label>Sexo:</label>
-              <select name="sexo" {...register('sexo')}>
-                <option value="masculino">Masculino</option>
-                <option value="femenino">Femenino</option>
-              </select>
+              <label>Editorial:</label>
+              <input type="text" name="editorial" {...register('editorial')} />
+              <span style={{ color: 'red' }}>{validator.message('editorial', getValues('editorial'), 'required')}</span>
             </div>
     
             <div className="form-group">
               <label>Foto Personal:</label>
               <input
                 type="file"
-                name="fotoPersonal"
-                {...register('fotoPersonal')}
+                name="portada"
+                {...register('portada')}
                 onChange={handleFotoChange}
               />
               {fotoPersonalUrl && <img src={fotoPersonalUrl} alt="Foto Personal" />}
             </div>
     
             <div className="form-group">
-              <label>Enfermedad:</label>
-              <input type="text" name="enfermedad" {...register('enfermedad')} />
-              <span style={{ color: 'red' }}>{validator.message('enfermedad', getValues('enfermedad'), 'required')}</span>
+              <label>Paginas:</label>
+              <input type="number" name="paginas" {...register('paginas')} />
+              <span style={{ color: 'red' }}>{validator.message('paginas', getValues('paginas'), 'required')}</span>
             </div>
     
-            <button type="submit">Actualizar Paciente</button>
+            <button type="submit">Actualizar Libro</button>
           </form>
         </div>
       );
     };
 
-export default ActualizarPaciente;
+export default ActualizarRegistro;
